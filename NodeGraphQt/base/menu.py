@@ -16,7 +16,7 @@ class Menu(object):
 
     def __repr__(self):
         cls_name = self.__class__.__name__
-        return '<{}("{}") object at {}>'.format(cls_name, self.name(), hex(id(self)))
+        return f'<{cls_name}("{self.name()}") object at {hex(id(self))}>'
 
     @property
     def qmenu(self):
@@ -133,7 +133,7 @@ class MenuCommand(object):
 
     def __repr__(self):
         cls_name = self.__class__.__name__
-        return 'NodeGraphQt.{}(\'{}\')'.format(cls_name, self.name())
+        return f"NodeGraphQt.{cls_name}(\'{self.name()}\')"
 
     @property
     def qaction(self):

@@ -47,7 +47,7 @@ class _ColorSolid(QtWidgets.QWidget):
     def color(self, color):
         self._color = color
         hex = '#{0:02x}{1:02x}{2:02x}'.format(*self._color)
-        self.setToolTip('rgb: {}\nhex: {}'.format(self._color[0:3], hex))
+        self.setToolTip(f'rgb: {self._color[:3]}\nhex: {hex}')
         self.update()
 
 
@@ -328,7 +328,7 @@ class PropWindow(QtWidgets.QWidget):
         layout.addLayout(self.__layout)
 
     def __repr__(self):
-        return '<PropWindow object at {}>'.format(hex(id(self)))
+        return f'<PropWindow object at {hex(id(self))}>'
 
     def add_widget(self, name, widget, value, label=None):
         """
@@ -419,7 +419,7 @@ class NodePropWidget(QtWidgets.QWidget):
         self._read_node(node)
 
     def __repr__(self):
-        return '<NodePropWidget object at {}>'.format(hex(id(self)))
+        return f'<NodePropWidget object at {hex(id(self))}>'
 
     def _on_close(self):
         """
@@ -535,7 +535,7 @@ class NodePropWidget(QtWidgets.QWidget):
             PropWindow: tab child widget.
         """
         if name in self.__tab_windows.keys():
-            raise AssertionError('Tab name {} already taken!'.format(name))
+            raise AssertionError(f'Tab name {name} already taken!')
         self.__tab_windows[name] = PropWindow(self)
         self.__tab.addTab(self.__tab_windows[name], name)
         return self.__tab_windows[name]
@@ -553,8 +553,7 @@ class NodePropWidget(QtWidgets.QWidget):
         if name == 'name':
             return self.name_wgt
         for tab_name, prop_win in self.__tab_windows.items():
-            widget = prop_win.get_widget(name)
-            if widget:
+            if widget := prop_win.get_widget(name):
                 return widget
 
 

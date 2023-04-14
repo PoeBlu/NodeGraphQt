@@ -109,8 +109,7 @@ def _open_session(graph):
     """
     current = graph.current_session()
     viewer = graph.viewer()
-    file_path = viewer.load_dialog(current)
-    if file_path:
+    if file_path := viewer.load_dialog(current):
         graph.load_session(file_path)
 
 
@@ -121,10 +120,9 @@ def _save_session(graph):
     Args:
         graph (NodeGraphQt.NodeGraph): node graph.
     """
-    current = graph.current_session()
-    if current:
+    if current := graph.current_session():
         graph.save_session(current)
-        msg = 'Session layout saved:\n{}'.format(current)
+        msg = f'Session layout saved:\n{current}'
         viewer = graph.viewer()
         viewer.message_dialog(msg, title='Session Saved')
     else:
@@ -140,8 +138,7 @@ def _save_session_as(graph):
     """
     current = graph.current_session()
     viewer = graph.viewer()
-    file_path = viewer.save_dialog(current)
-    if file_path:
+    if file_path := viewer.save_dialog(current):
         graph.save_session(file_path)
 
 

@@ -58,7 +58,7 @@ class NodeGraph(QtCore.QObject):
         self._wire_signals()
 
     def __repr__(self):
-        return '<{} object at {}>'.format(self.__class__.__name__, hex(id(self)))
+        return f'<{self.__class__.__name__} object at {hex(id(self))}>'
 
     def _wire_signals(self):
         # internal signals.
@@ -127,15 +127,16 @@ class NodeGraph(QtCore.QObject):
         """
 
         # don't emit signal for internal widget drops.
-        if data.hasFormat('text/plain'):
-            if data.text().startswith('<${}>:'.format(DRAG_DROP_ID)):
-                node_ids = data.text()[len('<${}>:'.format(DRAG_DROP_ID)):]
-                x, y = pos.x(), pos.y()
-                for node_id in node_ids.split(','):
-                    self.create_node(node_id, pos=[x, y])
-                x += 20
-                y += 20
-                return
+        if data.hasFormat('text/plain') and data.text().startswith(
+            f'<${DRAG_DROP_ID}>:'
+        ):
+            node_ids = data.text()[len(f'<${DRAG_DROP_ID}>:'):]
+            x, y = pos.x(), pos.y()
+            for node_id in node_ids.split(','):
+                self.create_node(node_id, pos=[x, y])
+            x += 20
+            y += 20
+            return
 
         self.data_dropped.emit(data, pos)
 
@@ -408,10 +409,10 @@ class NodeGraph(QtCore.QObject):
         Sets the zoom level to fit selected nodes.
         If no nodes are selected then all nodes in the graph will be framed.
         """
-        nodes = self.selected_nodes() or self.all_nodes()
-        if not nodes:
+        if nodes := self.selected_nodes() or self.all_nodes():
+            self._viewer.zoom_to_nodes([n.view for n in nodes])
+        else:
             return
-        self._viewer.zoom_to_nodes([n.view for n in nodes])
 
     def reset_zoom(self):
         """
@@ -604,11 +605,7 @@ class NodeGraph(QtCore.QObject):
         Returns:
             list[NodeGraphQt.BaseNode]: list of nodes.
         """
-        nodes = []
-        for item in self._viewer.selected_nodes():
-            node = self._model.nodes[item.id]
-            nodes.append(node)
-        return nodes
+        return [self._model.nodes[item.id] for item in self._viewer.selected_nodes()]
 
     def select_all(self):
         """
@@ -672,14 +669,14 @@ class NodeGraph(QtCore.QObject):
         search = regex.search(name)
         if not search:
             for x in range(1, len(node_names) + 1):
-                new_name = '{} {}'.format(name, x)
+                new_name = f'{name} {x}'
                 if new_name not in node_names:
                     return new_name
 
-        version = search.group(1)
+        version = search[1]
         name = name[:len(version) * -1].strip()
         for x in range(1, len(node_names) + 1):
-            new_name = '{} {}'.format(name, x)
+            new_name = f'{name} {x}'
             if new_name not in node_names:
                 return new_name
 
@@ -719,7 +716,7 @@ class NodeGraph(QtCore.QObject):
             # update the node model.
             n.update_model()
 
-            nodes_data.update(n.model.to_dict)
+            nodes_data |= n.model.to_dict
 
         for n_id, n_data in nodes_data.items():
             serial_data['nodes'][n_id] = n_data
@@ -763,8 +760,7 @@ class NodeGraph(QtCore.QObject):
         # build the nodes.
         for n_id, n_data in data.get('nodes', {}).items():
             identifier = n_data['type_']
-            NodeCls = self._node_factory.create_node_instance(identifier)
-            if NodeCls:
+            if NodeCls := self._node_factory.create_node_instance(identifier):
                 node = NodeCls()
                 node.NODE_NAME = n_data.get('name', node.NODE_NAME)
                 # set properties.
@@ -855,7 +851,7 @@ class NodeGraph(QtCore.QObject):
                 layout_data = json.load(data_file)
         except Exception as e:
             layout_data = None
-            print('Cannot read data from file.\n{}'.format(e))
+            print(f'Cannot read data from file.\n{e}')
 
         if not layout_data:
             return
@@ -876,8 +872,7 @@ class NodeGraph(QtCore.QObject):
             return False
         clipboard = QtWidgets.QApplication.clipboard()
         serial_data = self._serialize(nodes)
-        serial_str = json.dumps(serial_data)
-        if serial_str:
+        if serial_str := json.dumps(serial_data):
             clipboard.setText(serial_str)
             return True
         return False
@@ -940,7 +935,7 @@ class NodeGraph(QtCore.QObject):
             mode = not nodes[0].disabled()
         if len(nodes) > 1:
             text = {False: 'enable', True: 'disable'}[mode]
-            text = '{} ({}) nodes'.format(text, len(nodes))
+            text = f'{text} ({len(nodes)}) nodes'
             self._undo_stack.beginMacro(text)
             [n.set_disabled(mode) for n in nodes]
             self._undo_stack.endMacro()

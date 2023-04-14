@@ -51,8 +51,7 @@ class NodeObject(object):
         self._view.id = self._model.id
 
     def __repr__(self):
-        return '<{}("{}") object at {}>'.format(
-            self.__class__.__name__, self.NODE_NAME, hex(id(self)))
+        return f'<{self.__class__.__name__}("{self.NODE_NAME}") object at {hex(id(self))}>'
 
     @classproperty
     def type_(cls):
@@ -63,7 +62,7 @@ class NodeObject(object):
         Returns:
             str: node type.
         """
-        return cls.__identifier__ + '.' + cls.__name__
+        return f'{cls.__identifier__}.{cls.__name__}'
 
     @property
     def id(self):
@@ -475,8 +474,7 @@ class BaseNode(NodeObject):
             NodeGraphQt.Port: the created port object.
         """
         if name in self.inputs().keys():
-            raise PortRegistrationError(
-                'port name "{}" already registered.'.format(name))
+            raise PortRegistrationError(f'port name "{name}" already registered.')
         view = self.view.add_input(name, multi_input, display_name)
         if color:
             view.color = color
@@ -505,8 +503,7 @@ class BaseNode(NodeObject):
             NodeGraphQt.Port: the created port object.
         """
         if name in self.outputs().keys():
-            raise PortRegistrationError(
-                'port name "{}" already registered.'.format(name))
+            raise PortRegistrationError(f'port name "{name}" already registered.')
         view = self.view.add_output(name, multi_output, display_name)
         if color:
             view.color = color

@@ -71,13 +71,15 @@ if __name__ == '__main__':
     app.exec_()
 """
 
+
 try:
     from Qt import QtWidgets, QtGui, QtCore, QtCompat
 except ImportError as ie:
     from .vendor.Qt import __version__ as qtpy_ver
     from .vendor.Qt import QtWidgets, QtGui, QtCore, QtCompat
-    print('Cannot import "Qt.py" module falling back on '
-          '"NodeGraphQt.vendor.Qt ({})"'.format(qtpy_ver))
+    print(
+        f'Cannot import "Qt.py" module falling back on "NodeGraphQt.vendor.Qt ({qtpy_ver})"'
+    )
 
 from .base.graph import NodeGraph
 from .base.menu import Menu, MenuCommand

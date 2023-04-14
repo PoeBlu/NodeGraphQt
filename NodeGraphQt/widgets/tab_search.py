@@ -72,11 +72,10 @@ class TabSearchWidget(QtWidgets.QLineEdit):
         self.returnPressed.connect(self._on_search_submitted)
 
     def __repr__(self):
-        return '<{} at {}>'.format(self.__class__.__name__, hex(id(self)))
+        return f'<{self.__class__.__name__} at {hex(id(self))}>'
 
     def _on_search_submitted(self, index=0):
-        node_type = self._node_dict.get(self.text())
-        if node_type:
+        if node_type := self._node_dict.get(self.text()):
             self.search_submitted.emit(node_type)
         self.close()
         self.parentWidget().clearFocus()
@@ -100,7 +99,7 @@ class TabSearchWidget(QtWidgets.QLineEdit):
                 self._node_dict[name] = node_types[0]
                 continue
             for node_id in node_types:
-                self._node_dict['{} ({})'.format(name, node_id)] = node_id
+                self._node_dict[f'{name} ({node_id})'] = node_id
         node_names = sorted(self._node_dict.keys())
         self._model.setStringList(node_names)
         self._completer.setModel(self._model)
