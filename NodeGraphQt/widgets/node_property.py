@@ -44,7 +44,7 @@ class NodeBaseWidget(QtWidgets.QGraphicsProxyWidget):
 
     def setToolTip(self, tooltip):
         tooltip = tooltip.replace('\n', '<br/>')
-        tooltip = '<b>{}</b><br/>{}'.format(self.name, tooltip)
+        tooltip = f'<b>{self.name}</b><br/>{tooltip}'
         super(NodeBaseWidget, self).setToolTip(tooltip)
 
     @property

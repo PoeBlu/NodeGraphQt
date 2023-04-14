@@ -95,7 +95,7 @@ class PropertiesBinWidget(QtWidgets.QWidget):
         node_graph.property_changed.connect(self.__on_graph_property_changed)
 
     def __repr__(self):
-        return '<{} object at {}>'.format(self.__class__.__name__, hex(id(self)))
+        return f'<{self.__class__.__name__} object at {hex(id(self))}>'
 
     def __on_prop_close(self, node_id):
         items = self._prop_list.findItems(node_id, QtCore.Qt.MatchExactly)
@@ -178,8 +178,7 @@ class PropertiesBinWidget(QtWidgets.QWidget):
         if rows >= self.limit():
             self._prop_list.removeRow(rows - 1)
 
-        itm_find = self._prop_list.findItems(node.id, QtCore.Qt.MatchExactly)
-        if itm_find:
+        if itm_find := self._prop_list.findItems(node.id, QtCore.Qt.MatchExactly):
             self._prop_list.removeRow(itm_find[0].row())
 
         self._prop_list.insertRow(0)
@@ -219,8 +218,7 @@ class PropertiesBinWidget(QtWidgets.QWidget):
             NodePropWidget: node property widget.
         """
         node_id = node if isinstance(node, str) else node.id
-        itm_find = self._prop_list.findItems(node_id, QtCore.Qt.MatchExactly)
-        if itm_find:
+        if itm_find := self._prop_list.findItems(node_id, QtCore.Qt.MatchExactly):
             item = itm_find[0]
             return self._prop_list.cellWidget(item.row(), 0)
 
